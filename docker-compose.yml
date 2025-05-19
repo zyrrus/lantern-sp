@@ -18,6 +18,12 @@ services:
       - 88:88/tcp
       - 88:88/udp
       - 749:749/tcp
+    volumes:
+      - shared_keytabs:/shared
+    post_start:
+      - command: cp /http.keytab /shared/http.keytab
+        user: root
+        privileged: true
 
   apache:
     build: ./apache
@@ -27,14 +33,16 @@ services:
       - 80:80
     volumes:
       - ./krb5/krb5.conf:/etc/krb5.conf
+      - shared_keytabs:/shared
     depends_on:
       - kdc
 
-  # app:
-  #   build: ./app
-  #   container_name: nextjs-app
-  #   hostname: nextjs-app.dev.local
-  #   ports:
-  #     - "3000:3000"
-# volumes:
-#   sql_data:
+  app:
+    build: ./app
+    container_name: nextjs-app
+    hostname: nextjs-app.dev.local
+    ports:
+      - "3000:3000"
+volumes:
+  # sql_data:
+  shared_keytabs:
