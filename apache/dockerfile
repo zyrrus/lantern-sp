@@ -1,0 +1,14 @@
+FROM debian:bullseye
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    echo "krb5-config krb5-config/default_realm string DEV.LOCAL" | debconf-set-selections && \
+    echo "krb5-config krb5-config/kerberos_servers string kdc.dev.local" | debconf-set-selections && \
+    echo "krb5-config krb5-config/admin_server string kdc.dev.local" | debconf-set-selections && \
+    apt-get install -y apache2 libapache2-mod-auth-gssapi curl krb5-user && \
+    a2enmod auth_gssapi proxy proxy_http headers
+
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
+
+CMD ["apachectl", "-D", "FOREGROUND"]

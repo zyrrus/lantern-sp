@@ -1,0 +1,40 @@
+services:
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: sqlserver
+  #   ports:
+  #     - "1433:1433"
+  #   environment:
+  #     SA_PASSWORD: "YourStrong!Passw0rd"
+  #     ACCEPT_EULA: "Y"
+  #   volumes:
+  #     - sql_data:/var/opt/mssql
+
+  kdc:
+    build: ./krb5
+    container_name: kdc
+    hostname: kdc.dev.local
+    ports:
+      - 88:88/tcp
+      - 88:88/udp
+      - 749:749/tcp
+
+  apache:
+    build: ./apache
+    container_name: apache
+    hostname: apache.dev.local
+    ports:
+      - 80:80
+    volumes:
+      - ./krb5/krb5.conf:/etc/krb5.conf
+    depends_on:
+      - kdc
+
+  # app:
+  #   build: ./app
+  #   container_name: nextjs-app
+  #   hostname: nextjs-app.dev.local
+  #   ports:
+  #     - "3000:3000"
+# volumes:
+#   sql_data:

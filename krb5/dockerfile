@@ -1,0 +1,36 @@
+FROM debian:bullseye
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV REALM=DEV.LOCAL
+ENV DOMAIN=dev.local
+ENV MASTER_PASSWORD=MySecretMasterKey
+
+ENV USER=testuser
+ENV USER_PASSWORD=UserPass123
+
+ENV KRB5_KDC_PROFILE=/etc/krb5kdc/kdc.conf
+
+RUN apt-get update && \
+    apt-get install -y krb5-kdc krb5-admin-server krb5-user dnsutils && \
+    apt-get clean
+
+COPY kadm5.acl /etc/krb5kdc/kadm5.acl
+COPY krb5.conf /etc/krb5.conf 
+COPY kdc.conf /etc/krb5kdc/kdc.conf
+
+RUN mkdir -p /var/kerberos/krb5kdc
+
+# Create new database and stash
+RUN kdb5_util create -s -r DEV.LOCAL -P $MASTER_PASSWORD
+
+# Add user principal
+RUN kadmin.local -q "addprinc -pw $MASTER_PASSWORD admin/admin@$REALM"
+RUN kadmin.local -q "addprinc -pw $USER_PASSWORD $USER@$REALM"
+
+# Add HTTP service principal and export keytab
+RUN kadmin.local -q "addprinc -randkey HTTP/apache.dev.local@$REALM"
+RUN mkdir -p /shared && \
+    touch /shared/http.keytab && \
+    kadmin.local -q "ktadd -k http.keytab HTTP/apache.dev.local@$REALM"
+
+CMD ["/usr/sbin/krb5kdc", "-n"]
