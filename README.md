@@ -1,8 +1,17 @@
 # Lantern Service Portal
 
+> **Where I left off:**\
+> Apache proxy appears to be working. Next, I need to resolve the Next.js app errors (Prisma DB doesn't exist or something like that). Once that is complete, it would be worth trying to see if I can connect to the docker hosts from my regular browser
+
 ## Objectives
 
 - [ ] Windows Integrated Auth via Kerberos
+  - [Installing a KDC](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/install_kdc.html#install-and-configure-the-master-kdc)
+  - [Defaults](https://web.mit.edu/kerberos/krb5-1.12/doc/mitK5defaults.html#paths)
+  - [kadmin](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/admin_commands/kadmin_local.html#ktadd)
+  - [kadm5.acl](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kadm5_acl.html)
+  - [kdc.conf](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/kdc_conf.html#encryption-types)
+  - [krb5.conf](https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html)
 
 <!--
 - RBAC https://authjs.dev/guides/role-based-access-control

@@ -43,6 +43,7 @@ services:
     hostname: nextjs-app.dev.local
     ports:
       - "3000:3000"
+
 volumes:
   # sql_data:
   shared_keytabs:
