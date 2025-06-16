@@ -24,11 +24,34 @@
 
 ### Dev Environment
 
-Use Docker to spin up:
+References:
 
-- A fake Kerberos KDC (`DEV.LOCAL` realm).
-- Apache HTTPD with `mod_auth_kerb` for SSO.
-- A Next.js app served behind Apache.
+- https://help.hcl-software.com/unica/Campaign/en/12.1.1/Installation/Install/InstallnConfigure_MIT_Kerberos.html
+- https://www.adaltas.com/en/2019/11/04/windows-krb5-client-spnego/
+
+#### First Time Setup Instructions
+
+1. Install MIT Kerberos
+2. Copy the contents of `krb5/krb5.conf` into `C:\ProgramData\MIT\Kerberos5\krb5.ini`
+3. Set the system environment variable `KRB5CCNAME=C:\tmp\krb5cache` (the folder should be created, but the file "krb5cache" should not already exist)
+4. Run `which kinit` and `which klist` to ensure that both are using MIT's commands (Windows and Java have commands that can take priority)
+5. Configure browser to use MIT Kerberos
+   Firefox:
+   - Set `network.negotiate-auth.trusted-uris = .dev.local`
+   - Set `network.negotiate-auth.delegation-uris = .dev.local`
+   - Set `network.auth.use-sspi = false`
+
+#### Continuing Setup Instructions
+
+1. Use Docker to spin up:
+   - A fake Kerberos KDC (`DEV.LOCAL` realm).
+   - Apache HTTPD with `mod_auth_kerb` for SSO.
+   - A Next.js app served behind Apache.
+2. Authenticate with Kerberos:
+   > Remember that these commands may not be the MIT Kerberos ones. Be sure to use fully qualified paths to these executables if necessary.
+   - Run `kinit -V testuser@DEV.LOCAL` and enter password "UserPass123"
+   - Run `klist` to verify that the ticket has been cached
+3. Visit `http://apache.dev.local` in a browser
 
 ### Auth Flow
 
