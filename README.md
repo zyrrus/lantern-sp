@@ -35,7 +35,14 @@ References:
 2. Copy the contents of `krb5/krb5.conf` into `C:\ProgramData\MIT\Kerberos5\krb5.ini`
 3. Set the system environment variable `KRB5CCNAME=C:\tmp\krb5cache` (the folder should be created, but the file "krb5cache" should not already exist)
 4. Run `which kinit` and `which klist` to ensure that both are using MIT's commands (Windows and Java have commands that can take priority)
-5. Configure browser to use MIT Kerberos
+5. Configure hosts file to recognize Docker domain:
+   - Add the following lines to `C:/Windows/System32/drivers/etc/hosts`. IP addresses may need to be changed to match your system.
+     ```
+      127.19.0.4    apache.dev.local
+      127.19.0.3    kdc.dev.local
+      127.19.0.2    nextjs-app.dev.local
+     ```
+6. Configure browser to use MIT Kerberos
    Firefox:
    - Set `network.negotiate-auth.trusted-uris = .dev.local`
    - Set `network.negotiate-auth.delegation-uris = .dev.local`
@@ -69,3 +76,7 @@ References:
 | Dockerized KDC              | Real AD Domain Controller                     |
 | Manually created keytab     | Generated via `ktpass` and tied to AD account |
 | Apache in Docker            | IIS or Apache on Windows/Linux                |
+
+```
+
+```
